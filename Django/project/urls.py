@@ -19,6 +19,7 @@ import core.urls
 
 
 urlpatterns = [
-    path('test/', include(core.urls)),
+    path('', include(core.urls)),
     path('admin/', admin.site.urls),
+
 ]
