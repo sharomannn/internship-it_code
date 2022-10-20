@@ -4,6 +4,7 @@ from django.shortcuts import render
 from django.utils import timezone
 from django.http import HttpResponse, JsonResponse
 from core import models
+from core import filters
 from django.views.generic import TemplateView, ListView
 
 class Index(TemplateView):
@@ -39,3 +40,9 @@ def index(request):
 #         })
 #     # content = json.dumps(object_list)
 #     return JsonResponse({'objects' : object_list}, status=400)
+
+
+def tags(request):
+    f = filters.Tag(request.GET, queryset=models.Tag.objects.all())
+
+    return JsonResponse({'result':list(f.qs.values())})
