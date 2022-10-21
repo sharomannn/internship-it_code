@@ -6,6 +6,7 @@ from django.db import models
 User = get_user_model()
 
 class Tag(models.Model):
+    objects = None
     name = models.CharField(max_length=255)
     
     def __str__(self):

@@ -5,7 +5,17 @@ from django.utils import timezone
 from django.http import HttpResponse, JsonResponse
 from core import models
 from core import filters
+from core import serializers
 from django.views.generic import TemplateView, ListView
+from rest_framework.viewsets import ReadOnlyModelViewSet
+from rest_framework.generics import ListAPIView
+from rest_framework import status
+
+class TagViewSet(ReadOnlyModelViewSet):
+    queryset = models.Tag.objects.all()
+    serializer_class = serializers.Tag
+    filterset_class = filters.Tag
+
 
 class Index(TemplateView):
     template_name = 'core/index.html'
@@ -43,6 +53,10 @@ def index(request):
 
 
 def tags(request):
-    f = filters.Tag(request.GET, queryset=models.Tag.objects.all())
+    serializer = serializers.TagSearch(data=request.GET)
+    if not serializer.is_valid():
+        return JsonResponse(serializer.errors, status=400)
 
-    return JsonResponse({'result':list(f.qs.values())})
+    f = filters.Tag(request.GET, queryset=models.Tag.objects.all())
+    serializer = serializers.Tag(instance=f.qs, many=True)
+    return JsonResponse({'result':serializer.data})
