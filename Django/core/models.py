@@ -1,5 +1,3 @@
-import datetime
-from django.utils.timezone import  now
 from django.contrib.auth import get_user_model
 from django.db import models
 
@@ -11,6 +9,8 @@ class Tag(models.Model):
     
     def __str__(self):
         return self.name
+
+
 class Item(models.Model):
     user = models.ForeignKey(User, verbose_name='Пользователь', on_delete=models.CASCADE)
     name = models.CharField('Название', max_length=255, blank=True, default='', unique=True)
@@ -28,22 +28,3 @@ class Item(models.Model):
 
     def __str__(self):
         return self.name
-
-    def duration(self) -> datetime.timedelta:
-        return now() - self.created
-
-class ItemResult(models.Model):
-    item = models.OneToOneField(Item, on_delete=models.CASCADE)
-    image = models.ImageField()
-
-class Person(models.Model):
-    name = models.CharField('Name', max_length=255)
-    phone = models.IntegerField('Number phone')
-
-    class Meta:
-        verbose_name = 'Заказчик'
-        verbose_name_plural = 'Заказчики'
-
-    def __str__(self):
-        return self.name
-
