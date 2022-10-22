@@ -8,3 +8,11 @@ class Tag(django_filters.FilterSet):
         model = models.Tag
         exclude = ('active',)
         filter_fields = ['name',]
+
+
+class Item(django_filters.FilterSet):
+    name = django_filters.CharFilter(field_name='name', lookup_expr='icontains')
+
+    class Meta:
+        model = models.Item
+        fields = '__all__'
