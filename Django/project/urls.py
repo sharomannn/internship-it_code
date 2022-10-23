@@ -9,7 +9,7 @@ from django.conf.urls.static import static
 schema_view = get_swagger_view(title='Pastebin API')
 
 urlpatterns = [
-    path('teg', include(core.urls)),
+    path('teg', include(core.urls, namespace='core')),
     path('', schema_view),
     path('admin/', admin.site.urls),
 

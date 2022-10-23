@@ -2,6 +2,7 @@ from core import models
 from core import filters
 from core import serializers
 
+from rest_framework.authtoken.models import Token
 from rest_framework.generics import GenericAPIView
 from rest_framework.viewsets import ReadOnlyModelViewSet, ModelViewSet
 from rest_framework.authentication import SessionAuthentication, TokenAuthentication
@@ -12,10 +13,31 @@ from django.utils.timezone import now
 
 class RegisterUser(GenericAPIView):
     queryset = models.User
+    serializer_class = serializers.RegisterUser
+
 
     def post(self, request):
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        user = models.User.objects.create_user(
+            username=serializer.validated_data['username'],
+            password=serializer.validated_data['password'],
+        )
+        token = Token.objects.create(user=user)
+        return Response({'token': token.key})
 
+
+class LoginUser(GenericAPIView):
+    queryset = models.User
+    serializer_class = serializers.LoginUser
+
+    def post(self, request):
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        token = Token.objects.get(user__username=serializer.validated_data['username'])
+        return Response({'token': token.key})
         pass
+
 
 
 class TagViewSet(ReadOnlyModelViewSet):
